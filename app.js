@@ -9,7 +9,7 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-const Employee = require("./lib/Employee");
+// const Employee = require("./lib/Employee");
 
 
 // Write code to use inquirer to gather information about the development team members,
@@ -36,88 +36,135 @@ const Employee = require("./lib/Employee");
 // for the provided `render` function to work! ```
 
 
-
-
-const collectEmployeeInfo = [{
+const manangerQuestions = [{
         type: 'input',
-        message: 'Enter Employee name',
-        name: 'name',
-        category: 'employee',
-    },
-    {
-        type: 'input',
-        message: 'Enter your id',
-        name: 'id',
-        category: 'employee',
-    },
-    {
-        type: 'input',
-        message: 'Enter your email address',
-        name: 'email',
-        category: 'employee',
-    },
-    {
-        type: 'input',
-        message: 'Enter you manager name',
-        name: 'mangerName',
-        category: 'manger',
+        message: 'Enter manager name',
+        name: 'managerName',
+        category: 'Manager',
     },
     {
         type: 'input',
         message: 'Enter your office number',
         name: 'officeNumber',
-        category: 'manger',
+        category: 'Manager',
     },
     {
         type: 'input',
         message: 'Enter your manager id',
         name: 'managerId',
-        category: 'manager',
+        category: 'Manager',
     },
     {
         type: 'input',
         message: 'Enter your manager email',
         name: 'managerEmail',
-        category: 'manager',
+        category: 'Manager'
     },
     {
         type: 'input',
         message: 'Enter number of Engineers in the team',
         name: 'numberOfEngineers',
-        category: 'manager',
-    },
-    {
+        category: 'Manager',
+    }, {
         type: 'input',
         message: 'Enter number of Interns in the team',
         name: 'numberOfInterns',
-        category: 'manager',
+        category: 'Manager',
     },
-    {
+];
+
+const engineerQuestions = [{
         type: 'input',
-        message: 'Enter your github user name',
-        name: 'github',
+        message: 'Enter engineer name',
+        name: 'name',
         category: 'engineer',
     },
     {
         type: 'input',
-        message: 'Enter your shool',
+        message: 'Enter engineer id',
+        name: 'id',
+        category: 'engineer',
+    },
+    {
+        type: 'input',
+        message: 'Enter engineer email address',
+        name: 'email',
+        category: 'engineer',
+    }, {
+        type: 'input',
+        message: 'Enter your github user name',
         name: 'github',
+        category: 'engineer',
+    }
+];
+const internQuestions = [{
+        type: 'input',
+        message: 'Enter intern name',
+        name: 'name',
+        category: 'intern',
+    },
+    {
+        type: 'input',
+        message: 'Enter intern id',
+        name: 'id',
+        category: 'intern',
+    },
+    {
+        type: 'input',
+        message: 'Enter intern email address',
+        name: 'email',
+        category: 'intern',
+    }, {
+        type: 'input',
+        message: 'Enter your shool',
+        name: 'school',
         category: 'intern',
     },
 ];
+
+// const collectEmployeeInfo = [{
+//             type: 'input',
+//             message: 'Enter Employee name',
+//             name: 'name',
+//             category: 'employee',
+//         },
+//         {
+//             type: 'input',
+//             message: 'Enter employee id',
+//             name: 'id',
+//             category: 'employee',
+//         },
+//         {
+//             type: 'input',
+//             message: 'Enter employee email address',
+//             name: 'email',
+//             category: 'employee',
+//         },
+
+//     },
+//     
+
+//     {
+//         type: 'input',
+//         message: 'Enter your shool',
+//         name: 'github',
+//         category: 'intern',
+//     },
+// ];
 
 const teamMembers = [];
 
 function init() {
     managerPrompt();
 
+
     async function managerPrompt() {
         try {
-            const questionsManager = collectEmployeeInfo.filter(function (question) {
-                return question.category === 'manager';
-            });
+            // const questionsManager = collectEmployeeInfo.filter(function (question) {
+            //     return question.category === 'Manager';
+            // });
 
-            const answers = await inquirer.prompt(questionsManager);
+            const answers = await inquirer.prompt(manangerQuestions);
 
             if (
                 answers.managerName === '' ||
@@ -137,14 +184,16 @@ function init() {
 
             teamMembers.push(manager)
 
-            if (answers.numberOfInterns > 0) {
+            while (answers.numberOfInterns > 0) {
                 await internPrompt(answers.numberOfInterns);
+                answers.numberOfInterns--
             }
 
-            if (answers.numberOfEngineers > 0) {
+            while (answers.numberOfEngineers > 0) {
                 await engineerPrompt(answers.numberOfEngineers);
+                answers.numberOfEngineers--
             }
-
+            console.log(teamMembers);
             const html = render(teamMembers);
             fs.writeFile(outputPath, html, function (err) {
                 if (err) throw err;
@@ -157,27 +206,27 @@ function init() {
     async function internPrompt(numberOfInterns) {
         try {
 
-            const internQuestions = collectEmployeeInfo.filter(function (question) {
-                return question.category === "employee" || collectEmployeeInfo.category === "intern";
-            });
-            for (let i = 0; i < numberOfInterns; i++) {
-                const answers = await inquirer.prompt(internQuestions);
-                if (
-                    answers.name === "" ||
-                    answers.id === "" ||
-                    answers.email === "" ||
-                    answers.school === ""
-                ) {
-                    throw new Error("Please enter a valid input");
-                }
-                const intern = new Intern(
-                    answers.name,
-                    answers.id,
-                    answers.email,
-                    answers.school
-                );
-                teamMembers.push(Intern);
+            // const internQuestions = collectEmployeeInfo.filter(function (question) {
+            //     return question.category === "employee" || question.category === "intern";
+            // });
+            // for (let i = 0; i < numberOfInterns; i++) {
+            const answers = await inquirer.prompt(internQuestions);
+            if (
+                answers.name === "" ||
+                answers.id === "" ||
+                answers.email === "" ||
+                answers.school === ""
+            ) {
+                throw new Error("Please enter valid information");
             }
+            const intern = new Intern(
+                answers.name,
+                answers.id,
+                answers.email,
+                answers.school
+            );
+            teamMembers.push(intern);
+            // }
         } catch (err) {
             throw err;
         }
@@ -186,28 +235,28 @@ function init() {
     async function engineerPrompt(numberOfEngineers) {
         try {
 
-            const engineerQuestions = collectEmployeeInfo.filter(function (question) {
-                return question.category === "employee" || question.category === "engineer";
-            });
-            for (let i = 0; i < numberOfEngineers; i++) {
-                const answers = await inquirer.prompt(engineerQuestions);
-                if (
-                    answers.name === "" ||
-                    answers.id === "" ||
-                    answers.email === "" ||
-                    answers.github === ""
-                ) {
-                    throw new Error("Please enter valid information");
-                }
-                const engineer = new Engineer(
-                    answers.name,
-                    answers.id,
-                    answers.email,
-                    answers.github
-                );
-                employees.push(Engineer);
+            // const engineerQuestions = collectEmployeeInfo.filter(function (question) {
+            //     return question.category === "employee" || question.category === "engineer";
+            // });
+            // for (let i = 0; i < numberOfEngineers; i++) {
+            const answers = await inquirer.prompt(engineerQuestions);
+            if (
+                answers.name === "" ||
+                answers.id === "" ||
+                answers.email === "" ||
+                answers.github === ""
+            ) {
+                throw new Error("Please enter valid information");
             }
-            console.log(teamMembers);
+            const engineer = new Engineer(
+                answers.name,
+                answers.id,
+                answers.email,
+                answers.github
+            );
+            teamMembers.push(engineer);
+            // }
+
         } catch (err) {
             throw err;
         }
